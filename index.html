@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TERMINAL | SYSTEM OVERWRITE</title>
+    <title>SYSTEM CRITICAL ERROR</title>
     <style>
         body {
             background-color: #000;
@@ -17,86 +17,72 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            transition: background-color 0.05s;
         }
 
         #terminal-container {
-            width: 90%;
-            max-width: 600px;
-            height: 85vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            width: 95%;
+            height: 90vh;
+            overflow: hidden;
         }
 
         #terminal {
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 11px; /* 情報を詰め込むために小さく */
+            line-height: 1.1;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
 
-        .error { color: #ff3e3e; font-weight: bold; }
-        .success { color: #fff; text-shadow: 0 0 8px #0ABAB5; }
+        /* 高速切り替え用のクラス */
+        .flash-red { background-color: #ff0000 !important; color: #fff !important; }
+        .flash-white { background-color: #ffffff !important; color: #000 !important; }
+        .flash-blue { background-color: #0ABAB5 !important; color: #fff !important; }
 
-        /* Scanning effect */
-        .scanline {
-            width: 100%; height: 3px;
-            background: rgba(10, 186, 181, 0.15);
-            position: absolute; top: 0;
-            animation: scan 3s linear infinite;
+        .error { color: #ff3e3e; font-weight: bold; background: #200; }
+        .success { color: #fff; text-shadow: 0 0 5px #0ABAB5; }
+
+        /* スキャン線のノイズ */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
             pointer-events: none;
-        }
-        @keyframes scan { from { top: 0; } to { top: 100%; } }
-
-        /* Glitch animation for the final line */
-        .glitch {
-            animation: glitch 1s linear infinite;
-        }
-        @keyframes glitch {
-            2%, 64% { transform: translate(2px, 0) skew(0deg); }
-            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
-            62% { transform: translate(0, 0) skew(5deg); }
+            z-index: 100;
         }
     </style>
 </head>
 <body>
 
+    <div class="noise"></div>
     <div id="terminal-container">
         <div id="terminal"></div>
-        <div class="scanline"></div>
     </div>
 
     <script>
-        const logs = [
-            "> BOOTING MONT BLANK OS...",
-            "> ENCRYPTING CONNECTION...",
-            "> TARGET DEVICE DETECTED: UNKNOWN_USER",
-            "> BYPASSING LOCAL FIREWALL... [DONE]",
-            "> INJECTING CORE_V3_SCRIPT...",
-            "> [WARNING] UNAUTHORIZED ACCESS DETECTED",
-            "> BRUTE FORCING SYSTEM_ROOT...",
-            "> ACCESS GRANTED.",
-            "> FETCHING PERSONAL_DATA...",
-            "> [ERROR] ENCRYPTION LOCK FOUND",
-            "> OVERWRITING SECURITY_PROTOCOLS...",
-            "> SYNCING CLOTHING_INTERFACE...",
-            "> APPLYING BRAND_THEME: #0ABAB5",
-            "> DATA TRANSFER IN PROGRESS...",
-            "> 04% [██░░░░░░░░░░░░░░░░░░]",
-            "> 18% [████░░░░░░░░░░░░░░░░]",
-            "> 32% [███████░░░░░░░░░░░░░]",
-            "> 57% [███████████░░░░░░░░░]",
-            "> 81% [████████████████░░░░]",
-            "> 99% [███████████████████░]",
-            "> 100% [████████████████████]",
-            "> ALL FILES OVERWRITTEN.",
-            "> ACTIVATING 'MONT BLANK'...",
-            "> REBOOTING IN 3...",
-            "> REBOOTING IN 2...",
-            "> REBOOTING IN 1...",
-            "> FATAL ERROR: SYSTEM KERNEL CORRUPTED.",
-            "> CONNECTION LOST..."
+        // 大量のダミーログを生成して「高速」を演出
+        const baseLogs = [
+            "> OVERRIDING KERNEL...",
+            "> BYPASSING SECURITY...",
+            "> EXTRACTING RSA_KEYS...",
+            "> INJECTING MONT_BLANK.v3...",
+            "> CHMOD 777 /SYSTEM/ROOT",
+            "> RM -RF /USER/SECURITY",
+            "> TCP_NODELAY: ACTIVATED",
+            "> [CRITICAL] BUFFER OVERFLOW",
+            "> SYNCING CLOTHING_ID...",
+            "> EXECUTING PAYLOAD...",
+            "> STACK TRACE: 0x0045F2",
+            "> MONT BLANK CORE INJECTED"
         ];
+
+        // ログを100行分ランダムに生成
+        const logs = [];
+        for(let i=0; i<150; i++) {
+            const randomLine = baseLogs[Math.floor(Math.random() * baseLogs.length)];
+            logs.push(`${randomLine} [${(Math.random()*1000).toFixed(0)}]`);
+        }
+        logs.push("> FATAL ERROR: HARDWARE BREACH DETECTED.");
+        logs.push("> SYSTEM LOCKED BY MONT BLANK.");
 
         const terminal = document.getElementById('terminal');
         let index = 0;
@@ -105,28 +91,40 @@
             if (index < logs.length) {
                 const line = document.createElement('div');
                 line.textContent = logs[index];
-                
-                if (logs[index].includes('ERROR')) line.className = 'error';
-                if (logs[index].includes('DONE') || logs[index].includes('GRANTED')) line.className = 'success';
-                
-                // 最後の行だけ少し震えさせる演出
-                if (index === logs.length - 1) line.classList.add('glitch');
+
+                // 確率でエラー色にする
+                if (Math.random() > 0.8) line.className = 'error';
+                if (logs[index].includes('MONT BLANK')) line.className = 'success';
 
                 terminal.appendChild(line);
-                window.scrollTo(0, document.body.scrollHeight);
                 
-                let delay = Math.random() * 120 + 40;
-                if (logs[index].includes('%')) delay = 800;
-                if (logs[index].includes('REBOOT')) delay = 1000;
-                if (logs[index].includes('FATAL')) delay = 1500;
+                // 画面を一番下まで強制スクロール
+                terminal.parentElement.scrollTop = terminal.parentElement.scrollHeight;
+
+                // ページ（背景）の高速切り替え演出
+                if (index % 10 === 0) {
+                    document.body.classList.add('flash-red');
+                    setTimeout(() => document.body.classList.remove('flash-red'), 30);
+                } else if (index % 15 === 0) {
+                    document.body.classList.add('flash-blue');
+                    setTimeout(() => document.body.classList.remove('flash-blue'), 30);
+                }
 
                 index++;
-                setTimeout(typeLog, delay);
+                
+                // 速度を極限まで上げる (5ms〜20ms)
+                setTimeout(typeLog, 15);
+            } else {
+                // 最後に真っ白にしてフリーズ
+                setTimeout(() => {
+                    document.body.className = 'flash-white';
+                    document.body.innerHTML = "<h1 style='font-size:2rem; letter-spacing:10px;'>MONT BLANK<br>OVERWRITE COMPLETE</h1>";
+                }, 500);
             }
-            // 遷移処理（setTimeout）を削除したため、ここで停止します
         }
 
-        setTimeout(typeLog, 1200);
+        // 開始
+        setTimeout(typeLog, 500);
     </script>
 </body>
 </html>
