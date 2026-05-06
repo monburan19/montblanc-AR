@@ -1,49 +1,91 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wear the program</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SYSTEM OVERWRITE</title>
     <style>
         body {
-            background-color: #0ABAB5; /* ティファニーブルー */
+            background-color: #000;
+            color: #0ABAB5; /* Tiffany Blue */
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            color: white;
-            font-family: sans-serif;
-        }
-        .icon-container {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
+            padding: 20px;
             overflow: hidden;
-            border: 3px solid white;
-            margin-bottom: 25px;
+            font-size: 12px;
+            line-height: 1.2;
         }
-        img { width: 100%; height: 100%; object-fit: cover; }
-        .copy { font-weight: 200; font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 5px; }
-        .brand { font-size: 0.7rem; letter-spacing: 4px; opacity: 0.9; margin-bottom: 40px; text-transform: uppercase; }
+
+        #terminal {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .error { color: #ff0000; }
+        .success { color: #fff; text-shadow: 0 0 10px #0ABAB5; }
+
+        /* スキャン線の演出 */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+    <div id="terminal"></div>
 
-    <div class="icon-container">
-        <img src="image.jpeg" alt="MONT BLANK"> <!-- 画像名を一致させてください -->
-    </div>
+    <script>
+        const logs = [
+            "> INITIALIZING SYSTEM OVERWRITE...",
+            "> BYPASSING SECURITY PROTOCOLS...",
+            "> ACCESSING LOCAL STORAGE...",
+            "> [ERROR] ENCRYPTION DETECTED",
+            "> INJECTING MONT BLANK CORE...",
+            "> 0% ... 24% ... 67% ... 100%",
+            "> SUCCESS: ROOT ACCESS GRANTED",
+            "> FETCHING USER DATA...",
+            "> IP: 192.168.0.1 (SIMULATED)",
+            "> DEVICE: MOBILE_HANDSET_DETECTED",
+            "> LOCATION: UNKNOWN",
+            "> WARNING: DEVICE VULNERABILITY FOUND",
+            "> SYNCING WITH CLOTHING DEVICE...",
+            "> [MONT BLANK] PROTOCOL ACTIVATED",
+            "> TERMINATING ORIGINAL OS...",
+            "> REBOOTING IN 3... 2... 1..."
+        ];
 
-    <div class="copy">Wear the program</div>
-    <div class="brand">DESIGNED BY MONT BLANK</div>
+        const terminal = document.getElementById('terminal');
+        let index = 0;
 
-    <!-- あなたが送ってくれたURLを元に作成したプレイヤー -->
-    <iframe style="border-radius:12px" 
-        src="https://open.spotify.com/embed/track/3qhlB30KknSejmIvZZLjOD?utm_source=generator&theme=0" 
-        width="300" height="80" frameBorder="0" allowfullscreen="" 
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-    </iframe>
+        function typeLog() {
+            if (index < logs.length) {
+                const line = document.createElement('div');
+                line.textContent = logs[index];
+                if (logs[index].includes('ERROR')) line.className = 'error';
+                if (logs[index].includes('MONT BLANK')) line.className = 'success';
+                
+                terminal.appendChild(line);
+                window.scrollTo(0, document.body.scrollHeight);
+                index++;
+                setTimeout(typeLog, Math.random() * 200 + 50); // ランダムな速度でタイピング
+            } else {
+                // 最後の演出：真っ白にフラッシュしてブランドロゴへ
+                setTimeout(() => {
+                    document.body.style.backgroundColor = "#0ABAB5";
+                    document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:40vh; font-size:3rem;'>MONT BLANK</h1>";
+                    // ここで以前作った index.html に自動遷移させることも可能
+                    // setTimeout(() => { location.href = "index.html"; }, 2000);
+                }, 1000);
+            }
+        }
 
+        typeLog();
+    </script>
 </body>
 </html>
