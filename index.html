@@ -3,128 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYSTEM CRITICAL ERROR</title>
+    <title>kernel_panic_dump</title>
     <style>
         body {
-            background-color: #000;
-            color: #0ABAB5; /* Tiffany Blue */
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #050505;
+            color: #0ABAB5;
+            font-family: "Lucida Console", Monaco, monospace;
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
-            transition: background-color 0.05s;
+            text-shadow: 0 0 2px rgba(10, 186, 181, 0.5);
         }
 
-        #terminal-container {
-            width: 95%;
-            height: 90vh;
-            overflow: hidden;
-        }
-
-        #terminal {
-            font-size: 11px; /* 情報を詰め込むために小さく */
-            line-height: 1.1;
+        #console {
+            padding: 15px;
+            font-size: 10px;
+            line-height: 1.2;
+            word-break: break-all;
             white-space: pre-wrap;
-            word-wrap: break-word;
         }
 
-        /* 高速切り替え用のクラス */
-        .flash-red { background-color: #ff0000 !important; color: #fff !important; }
-        .flash-white { background-color: #ffffff !important; color: #000 !important; }
-        .flash-blue { background-color: #0ABAB5 !important; color: #fff !important; }
+        .alert { color: #ff0033; background: rgba(255, 0, 51, 0.1); }
+        .success { color: #fff; }
 
-        .error { color: #ff3e3e; font-weight: bold; background: #200; }
-        .success { color: #fff; text-shadow: 0 0 5px #0ABAB5; }
-
-        /* スキャン線のノイズ */
-        .noise {
+        /* 画面の物理的な崩壊演出 */
+        .glitch-vignette {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.8) 100%);
             pointer-events: none;
-            z-index: 100;
         }
     </style>
 </head>
 <body>
-
-    <div class="noise"></div>
-    <div id="terminal-container">
-        <div id="terminal"></div>
-    </div>
+    <div id="console"></div>
+    <div class="glitch-vignette"></div>
 
     <script>
-        // 大量のダミーログを生成して「高速」を演出
-        const baseLogs = [
-            "> OVERRIDING KERNEL...",
-            "> BYPASSING SECURITY...",
-            "> EXTRACTING RSA_KEYS...",
-            "> INJECTING MONT_BLANK.v3...",
-            "> CHMOD 777 /SYSTEM/ROOT",
-            "> RM -RF /USER/SECURITY",
-            "> TCP_NODELAY: ACTIVATED",
-            "> [CRITICAL] BUFFER OVERFLOW",
-            "> SYNCING CLOTHING_ID...",
-            "> EXECUTING PAYLOAD...",
-            "> STACK TRACE: 0x0045F2",
-            "> MONT BLANK CORE INJECTED"
+        const consoleEl = document.getElementById('console');
+        
+        // リアルなシステムメッセージ群
+        const coreLogs = [
+            "ld-linux-x86-64.so.2: shared object 'libmontblank.so.1' loaded at 0x7f8a92...",
+            "Process ID: [RANDOM_PID] - State: RUNNING",
+            "mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f8a...",
+            "RECV_BUF: TCP_STREAM_INIT_SUCCESS",
+            "Infiltrating /sys/class/net/eth0/address...",
+            "EXT4-fs (vda1): mounting ext4 file system using data=ordered",
+            "CRITICAL: kernel_thread_check: failed to verify vendor_id",
+            "MONT_BLANK_CORE: Attempting privilege escalation (UID: 0)...",
+            "0x00000000 00 00 00 00 00 00 00 00  ........",
+            "0x00000010 FF FF FF FF FF FF FF FF  ........",
+            "[SYSTEM] Memory dump initiated at /dev/mem",
+            "ALERT: Unrecognized clothing_id detected. Overwriting local_cfg..."
         ];
 
-        // ログを100行分ランダムに生成
-        const logs = [];
-        for(let i=0; i<150; i++) {
-            const randomLine = baseLogs[Math.floor(Math.random() * baseLogs.length)];
-            logs.push(`${randomLine} [${(Math.random()*1000).toFixed(0)}]`);
-        }
-        logs.push("> FATAL ERROR: HARDWARE BREACH DETECTED.");
-        logs.push("> SYSTEM LOCKED BY MONT BLANK.");
+        let lineCount = 0;
 
-        const terminal = document.getElementById('terminal');
-        let index = 0;
-
-        function typeLog() {
-            if (index < logs.length) {
-                const line = document.createElement('div');
-                line.textContent = logs[index];
-
-                // 確率でエラー色にする
-                if (Math.random() > 0.8) line.className = 'error';
-                if (logs[index].includes('MONT BLANK')) line.className = 'success';
-
-                terminal.appendChild(line);
-                
-                // 画面を一番下まで強制スクロール
-                terminal.parentElement.scrollTop = terminal.parentElement.scrollHeight;
-
-                // ページ（背景）の高速切り替え演出
-                if (index % 10 === 0) {
-                    document.body.classList.add('flash-red');
-                    setTimeout(() => document.body.classList.remove('flash-red'), 30);
-                } else if (index % 15 === 0) {
-                    document.body.classList.add('flash-blue');
-                    setTimeout(() => document.body.classList.remove('flash-blue'), 30);
-                }
-
-                index++;
-                
-                // 速度を極限まで上げる (5ms〜20ms)
-                setTimeout(typeLog, 15);
+        function addLine() {
+            const line = document.createElement('div');
+            
+            // 90%は通常ログ、10%は文字化けやエラー
+            if (Math.random() > 0.92) {
+                line.className = 'alert';
+                line.textContent = `!! FATAL EXCEPTION 0x${Math.floor(Math.random()*16777215).toString(16).toUpperCase()} !!`;
+            } else if (Math.random() > 0.95) {
+                line.className = 'success';
+                line.textContent = "> MONT BLANK: " + btoa(Math.random()).substring(0, 20);
             } else {
-                // 最後に真っ白にしてフリーズ
-                setTimeout(() => {
-                    document.body.className = 'flash-white';
-                    document.body.innerHTML = "<h1 style='font-size:2rem; letter-spacing:10px;'>MONT BLANK<br>OVERWRITE COMPLETE</h1>";
-                }, 500);
+                line.textContent = coreLogs[Math.floor(Math.random() * coreLogs.length)]
+                                    .replace("[RANDOM_PID]", Math.floor(Math.random()*9999));
+            }
+
+            consoleEl.appendChild(line);
+            
+            // 行数が増えたら古いものを消して重さを防ぐ
+            if (consoleEl.childNodes.length > 50) {
+                consoleEl.removeChild(consoleEl.firstChild);
+            }
+
+            lineCount++;
+
+            // 演出の緩急
+            let nextDelay = Math.random() * 50; // 基本は高速
+            if (lineCount % 20 === 0) nextDelay = 800; // たまに解析で止まる
+            if (lineCount % 45 === 0) nextDelay = 2000; // 長めのフリーズ
+
+            // 最終局面
+            if (lineCount < 250) {
+                setTimeout(addLine, nextDelay);
+            } else {
+                triggerFinalCrash();
             }
         }
 
-        // 開始
-        setTimeout(typeLog, 500);
+        function triggerFinalCrash() {
+            // 文字をバラバラにする演出
+            document.body.style.filter = "invert(1) contrast(200%)";
+            consoleEl.style.transform = "skewX(20deg)";
+            setTimeout(() => {
+                document.body.innerHTML = "";
+                document.body.style.backgroundColor = "#000";
+                // 最後にポツンと、スキャンした人への「所有権の主張」を表示
+                const finalMsg = document.createElement('div');
+                finalMsg.style.cssText = "color:#0ABAB5; font-size:10px; text-align:center; margin-top:45vh;";
+                finalMsg.textContent = "DEVICE_OWNERSHIP: TRANSFERRED_TO_MONT_BLANK";
+                document.body.appendChild(finalMsg);
+            }, 100);
+        }
+
+        // スタート
+        setTimeout(addLine, 1000);
     </script>
 </body>
 </html>
