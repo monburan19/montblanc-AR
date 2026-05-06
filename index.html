@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MONT BLANK | Wear the program</title>
+    <title>TERMINAL | SYSTEM OVERWRITE</title>
     <style>
-        /* 全体設定 */
         body {
             background-color: #000;
-            color: #0ABAB5; /* ティファニーブルー */
+            color: #0ABAB5; /* Tiffany Blue */
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
@@ -20,112 +19,86 @@
             height: 100vh;
         }
 
-        /* ハッキング画面用 */
-        #terminal {
+        #terminal-container {
             width: 90%;
-            height: 80vh;
-            overflow: hidden;
+            max-width: 600px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #terminal {
             font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.5;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
         .error { color: #ff3e3e; font-weight: bold; }
         .success { color: #fff; text-shadow: 0 0 8px #0ABAB5; }
 
-        /* メイン画面用（最初は非表示） */
-        #main-content {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            background-color: #0ABAB5;
-            color: white;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: sans-serif;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .icon-container {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid white;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .icon-container img { width: 100%; height: 100%; object-fit: cover; }
-        .copy { font-weight: 200; font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 5px; }
-        .brand { font-size: 0.7rem; letter-spacing: 4px; opacity: 0.9; margin-bottom: 40px; text-transform: uppercase; }
-
-        /* スキャン線の演出 */
+        /* Scanning effect */
         .scanline {
-            width: 100%; height: 2px;
-            background: rgba(10, 186, 181, 0.2);
+            width: 100%; height: 3px;
+            background: rgba(10, 186, 181, 0.15);
             position: absolute; top: 0;
-            animation: scan 4s linear infinite;
+            animation: scan 3s linear infinite;
+            pointer-events: none;
         }
         @keyframes scan { from { top: 0; } to { top: 100%; } }
+
+        /* Glitch animation for the final line */
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: translate(0, 0) skew(5deg); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ハッキング・ターミナル画面 -->
     <div id="terminal-container">
         <div id="terminal"></div>
         <div class="scanline"></div>
     </div>
 
-    <!-- メイン・ブランド画面 -->
-    <div id="main-content">
-        <div class="icon-container">
-            <img src="image.jpeg" alt="MONT BLANK">
-        </div>
-        <div class="copy">Wear the program</div>
-        <div class="brand">DESIGNED BY MONT BLANK</div>
-        
-        <!-- Spotify Player -->
-        <iframe style="border-radius:12px" 
-            src="https://open.spotify.com/embed/track/3qhlB30KknSejmIvZZLjOD?utm_source=generator&theme=0" 
-            width="300" height="80" frameBorder="0" allowfullscreen="" 
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-        </iframe>
-    </div>
-
     <script>
         const logs = [
-            "> INITIALIZING SYSTEM OVERWRITE...",
-            "> CONNECTION ESTABLISHED: REMOTE_SENSORS",
-            "> BYPASSING DEVICE FIREWALL... [DONE]",
-            "> [WARNING] UNKNOWN PROTOCOL DETECTED",
-            "> INJECTING: MONT_BLANK_CORE_V3.sys",
-            "> ACCESSING LOCAL STORAGE...",
-            "> [ERROR] ACCESS DENIED. RE-ROUTING...",
-            "> BYPASSING... [SUCCESS]",
-            "> FETCHING USER_DATA... ENCRYPTING...",
-            "> OVERWRITING OS KERNEL...",
-            "> SYNCING CLOTHING_ID: #0ABAB5",
-            "> STARTING DATA TRANSFER...",
-            "> 02% [█░░░░░░░░░░░░░░░░░░░]",
-            "> 14% [███░░░░░░░░░░░░░░░░░]",
-            "> 37% [███████░░░░░░░░░░░░░]",
-            "> 62% [████████████░░░░░░░░]",
-            "> 88% [█████████████████░░░]",
+            "> BOOTING MONT BLANK OS...",
+            "> ENCRYPTING CONNECTION...",
+            "> TARGET DEVICE DETECTED: UNKNOWN_USER",
+            "> BYPASSING LOCAL FIREWALL... [DONE]",
+            "> INJECTING CORE_V3_SCRIPT...",
+            "> [WARNING] UNAUTHORIZED ACCESS DETECTED",
+            "> BRUTE FORCING SYSTEM_ROOT...",
+            "> ACCESS GRANTED.",
+            "> FETCHING PERSONAL_DATA...",
+            "> [ERROR] ENCRYPTION LOCK FOUND",
+            "> OVERWRITING SECURITY_PROTOCOLS...",
+            "> SYNCING CLOTHING_INTERFACE...",
+            "> APPLYING BRAND_THEME: #0ABAB5",
+            "> DATA TRANSFER IN PROGRESS...",
+            "> 04% [██░░░░░░░░░░░░░░░░░░]",
+            "> 18% [████░░░░░░░░░░░░░░░░]",
+            "> 32% [███████░░░░░░░░░░░░░]",
+            "> 57% [███████████░░░░░░░░░]",
+            "> 81% [████████████████░░░░]",
+            "> 99% [███████████████████░]",
             "> 100% [████████████████████]",
-            "> TRANSFER COMPLETE.",
-            "> ACTIVATING 'WEAR THE PROGRAM'...",
-            "> SYSTEM REBOOT IN 3...",
-            "> SYSTEM REBOOT IN 2...",
-            "> SYSTEM REBOOT IN 1...",
-            "> WELCOME TO MONT BLANK."
+            "> ALL FILES OVERWRITTEN.",
+            "> ACTIVATING 'MONT BLANK'...",
+            "> REBOOTING IN 3...",
+            "> REBOOTING IN 2...",
+            "> REBOOTING IN 1...",
+            "> FATAL ERROR: SYSTEM KERNEL CORRUPTED.",
+            "> CONNECTION LOST..."
         ];
 
         const terminal = document.getElementById('terminal');
-        const mainContent = document.getElementById('main-content');
-        const terminalContainer = document.getElementById('terminal-container');
         let index = 0;
 
         function typeLog() {
@@ -133,35 +106,27 @@
                 const line = document.createElement('div');
                 line.textContent = logs[index];
                 
-                // 演出用の色付け
                 if (logs[index].includes('ERROR')) line.className = 'error';
-                if (logs[index].includes('SUCCESS')) line.className = 'success';
-                if (logs[index].includes('MONT BLANK')) line.className = 'success';
+                if (logs[index].includes('DONE') || logs[index].includes('GRANTED')) line.className = 'success';
+                
+                // 最後の行だけ少し震えさせる演出
+                if (index === logs.length - 1) line.classList.add('glitch');
 
                 terminal.appendChild(line);
-                
-                // 常に最新のログが見えるようにスクロール
                 window.scrollTo(0, document.body.scrollHeight);
                 
-                // 待ち時間を調整（%表示などは少し遅くする）
-                let delay = Math.random() * 150 + 50;
-                if (logs[index].includes('%')) delay = 600;
+                let delay = Math.random() * 120 + 40;
+                if (logs[index].includes('%')) delay = 800;
                 if (logs[index].includes('REBOOT')) delay = 1000;
+                if (logs[index].includes('FATAL')) delay = 1500;
 
                 index++;
                 setTimeout(typeLog, delay);
-            } else {
-                // 2秒待ってからメイン画面に切り替え
-                setTimeout(() => {
-                    terminalContainer.style.display = 'none';
-                    mainContent.style.display = 'flex';
-                    document.body.style.backgroundColor = "#0ABAB5";
-                }, 1500);
             }
+            // 遷移処理（setTimeout）を削除したため、ここで停止します
         }
 
-        // 1秒待ってからハッキング開始
-        setTimeout(typeLog, 1000);
+        setTimeout(typeLog, 1200);
     </script>
 </body>
 </html>
